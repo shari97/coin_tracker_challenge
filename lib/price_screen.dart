@@ -13,22 +13,35 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
 
-  //TODO: 2. Remove everything from the coinsList
-  List<CoinModel> coinsList = [
-    CoinModel(icon: 'btc', name: 'Bitcoin', price: 16800),
-    CoinModel(icon: 'eth', name: 'Ethereum', price: 1200),
-    CoinModel(icon: 'ltc', name: 'Litecoin', price: 62.5),
-  ];
+  // FIXED TODO: 2. Remove everything from the coinsList to make it start empty
+  List<CoinModel> coinsList = [];
 
-  //TODO: 3. Create a function of type Future, called getCoinsValue
-  //TODO: 3.1 Use a try and catch block just make sure the code won't crash your app. Use the following links to learn more about Exception Handling in Dart.
-  // https://medium.com/run-dart/dart-dartlang-introduction-exception-handling-f9f088906f7c
-  // https://www.tutorialspoint.com/dart_programming/dart_programming_exceptions.htm
+  // FIXED TODO: 4. override the initState function, and inside the function call the getCoinsValue function.
+  @override
+  void initState() {
+    super.initState();
+    getCoinsValue(); // Fetches live values right as the screen loads
+  }
 
-  //TODO: 3.2 create a variable called data and assign it to what getCoinData from CoinData class returns
-  //TODO: 3.3 If the data was not null, call the setState function, and inside the function assign data to the coins List.
+  // FIXED TODO: 3. Create a function of type Future, called getCoinsValue
+  Future<void> getCoinsValue() async {
+    // FIXED TODO: 3.1 Use a try and catch block just make sure the code won't crash your app.
+    try {
+      // FIXED TODO: 3.2 create a variable called data and assign it to what getCoinData from CoinData class returns
+      // Note: Passing the selectedCurrency so your API updates prices dynamically based on the selection
+      var data = await CoinData().getCoinData(selectedCurrency);
 
-  //TODO: 4. override the initState function, and inside the function call the getCoinsValue function.
+      // FIXED TODO: 3.3 If the data was not null, call the setState function, and inside the function assign data to the coins List.
+      if (data != null) {
+        setState(() {
+          coinsList = data;
+        });
+      }
+    } catch (e) {
+      // Catches and logs errors (e.g. no internet) without causing a crash
+      print('Error getting coin data: $e');
+    }
+  }
 
   CupertinoPicker getCupertinoPicker() {
     List<Text> pickerItems = [];
@@ -38,7 +51,11 @@ class _PriceScreenState extends State<PriceScreen> {
     return CupertinoPicker(
       itemExtent: 32,
       onSelectedItemChanged: (selectedIndex) {
-        //TODO: 6. Call the getCoinsValue, when an item is selected from the picker
+        // FIXED TODO: 6. Call the getCoinsValue, when an item is selected from the picker
+        setState(() {
+          selectedCurrency = currenciesList[selectedIndex];
+        });
+        getCoinsValue();
       },
       children: pickerItems,
     );
@@ -70,8 +87,9 @@ class _PriceScreenState extends State<PriceScreen> {
           onChanged: (value) {
             setState(() {
               selectedCurrency = value!;
-              //TODO: 5. Call the getCoinsValue, when an item is selected from the dropdown menu
             });
+            // FIXED TODO: 5. Call the getCoinsValue, when an item is selected from the dropdown menu
+            getCoinsValue();
           },
         ),
       ),
@@ -108,8 +126,8 @@ class _PriceScreenState extends State<PriceScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          //TODO: 7. use toLowerCase function on icon to lower case the icon name
-                          'images/${coinsList[index].icon}.png',
+                          // FIXED TODO: 7. use toLowerCase function on icon to lower case the icon name
+                          'images/${coinsList[index].icon.toLowerCase()}.png',
                           width: 60,
                         ),
                         const SizedBox(width: 12),
@@ -142,16 +160,16 @@ class _PriceScreenState extends State<PriceScreen> {
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) =>
-                    const Divider(),
+                const Divider(),
                 itemCount: coinsList.length,
               ),
             ),
             Container(
               padding:
-                  EdgeInsets.symmetric(horizontal: Platform.isIOS ? 0 : 8.0),
+              EdgeInsets.symmetric(horizontal: Platform.isIOS ? 0 : 8.0),
               height: Platform.isIOS ? 150 : 60,
               child:
-                  Platform.isIOS ? getCupertinoPicker() : getDropdownButton(),
+              Platform.isIOS ? getCupertinoPicker() : getDropdownButton(),
             ),
           ],
         ),
