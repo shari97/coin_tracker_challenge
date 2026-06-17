@@ -32,8 +32,7 @@ Installation
 
 Clone the repository and navigate into it:
 
-bashgit clone <your-repo-url>
-cd coin_tracker_challenge
+bashgit clone <https://github.com/shari97/coin_tracker_challenge>
 
 Install dependencies:
 
@@ -45,7 +44,6 @@ bashflutter run
 
 API
 Prices are fetched from the CoinGecko API. The app uses the demo-tier key included in coin_data.dart. To use your own key, replace the value of kAPIKey in that file.
-dartconst kAPIKey = 'your-key-here';
 const kBaseURL = 'https://api.coingecko.com/api/v3';
 Endpoint used: GET /simple/price?ids={coin}&vs_currencies={currency}
 
